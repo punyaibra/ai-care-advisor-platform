@@ -1,8 +1,6 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Activity, Calendar, FileText } from "lucide-react";
-import Layout from "@/components/layout/Layout";
 
 const HomePage = () => {
   const features = [
@@ -44,7 +42,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-blue-50 to-white py-16 md:py-24">
         <div className="container mx-auto px-4">
@@ -264,7 +262,7 @@ const HomePage = () => {
           </Button>
         </div>
       </section>
-    </Layout>
+    </>
   );
 };
 
