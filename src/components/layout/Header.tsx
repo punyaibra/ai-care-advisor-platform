@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Bell, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,101 +14,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
-import { UserProfileDropdown } from "@/components/user/UserProfileDropdown";
-import { useUser } from "@/contexts/UserContext";
-import { useNotifications } from "@/contexts/NotificationContext";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
-  const { user, isLoggedIn, login, register, logout } = useUser();
-  const { addNotification } = useNotifications();
-  
-  const loginForm = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  // Form states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
-  const registerForm = useForm({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-  });
-
-  const handleLogin = async (data: z.infer<typeof loginSchema>) => {
-    const success = await login(data.email, data.password);
-    if (success) {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate login - In a real app, this would connect to a backend
+    if (email && password) {
+      setIsLoggedIn(true);
       toast.success("Successfully logged in!");
-      setLoginDialogOpen(false);
-      loginForm.reset();
-      
-      // Add a welcome back notification
-      addNotification({
-        title: "Welcome back!",
-        message: "You've successfully logged in to your account.",
-        type: "success",
-      });
+    } else {
+      toast.error("Please enter both email and password");
     }
   };
 
-  const handleRegister = async (data: z.infer<typeof registerSchema>) => {
-    const success = await register(data.name, data.email, data.password);
-    if (success) {
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate registration - In a real app, this would connect to a backend
+    if (email && password && name) {
+      setIsLoggedIn(true);
       toast.success("Account created successfully!");
-      setRegisterDialogOpen(false);
-      registerForm.reset();
-      
-      // Add welcome notifications
-      addNotification({
-        title: "Welcome to CareAdvisor!",
-        message: "Your account has been successfully created.",
-        type: "success",
-      });
-      
-      setTimeout(() => {
-        addNotification({
-          title: "Getting Started",
-          message: "Try our AI consultation feature to analyze your symptoms.",
-          type: "info",
-        });
-      }, 3000);
+    } else {
+      toast.error("Please fill in all fields");
     }
   };
 
   const handleLogout = () => {
-    logout();
-    setIsMenuOpen(false);
+    setIsLoggedIn(false);
+    toast.success("Logged out successfully");
   };
 
   return (
@@ -136,18 +76,26 @@ const Header = () => {
         
         {/* Desktop Action Items */}
         <div className="hidden md:flex items-center space-x-3">
-          <NotificationDropdown />
+          <Button variant="ghost" size="icon">
+            <Bell className="h-5 w-5 text-health-dark" />
+          </Button>
           
           {isLoggedIn ? (
-            <UserProfileDropdown 
-              isLoggedIn={isLoggedIn} 
-              userName={user?.name} 
-              userEmail={user?.email} 
-              onLogout={handleLogout} 
-            />
+            <div className="flex items-center space-x-3">
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5 text-health-primary" />
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-health-primary text-health-primary hover:bg-health-primary hover:text-white"
+                onClick={handleLogout}
+              >
+                Sign Out
+              </Button>
+            </div>
           ) : (
             <>
-              <Dialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen}>
+              <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="border-health-primary text-health-primary hover:bg-health-primary hover:text-white">
                     Sign In
@@ -160,55 +108,38 @@ const Header = () => {
                       Enter your credentials to access your account
                     </DialogDescription>
                   </DialogHeader>
-                  <Form {...loginForm}>
-                    <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4 pt-4">
-                      <FormField
-                        control={loginForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="email" 
-                                placeholder="your.email@example.com"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                  <form onSubmit={handleLogin} className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="login-email">Email</Label>
+                      <Input 
+                        id="login-email" 
+                        type="email" 
+                        placeholder="your.email@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
-                      <FormField
-                        control={loginForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="password" 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="login-password">Password</Label>
+                      <Input 
+                        id="login-password" 
+                        type="password" 
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-health-primary hover:bg-health-primary/90"
-                        disabled={loginForm.formState.isSubmitting}
-                      >
-                        {loginForm.formState.isSubmitting ? "Signing in..." : "Sign In"}
-                      </Button>
-                    </form>
-                  </Form>
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-health-primary hover:bg-health-primary/90"
+                    >
+                      Sign In
+                    </Button>
+                  </form>
                 </DialogContent>
               </Dialog>
 
-              <Dialog open={registerDialogOpen} onOpenChange={setRegisterDialogOpen}>
+              <Dialog>
                 <DialogTrigger asChild>
                   <Button className="bg-health-primary text-white hover:bg-health-primary/90">
                     Register
@@ -221,67 +152,43 @@ const Header = () => {
                       Enter your details to create a new account
                     </DialogDescription>
                   </DialogHeader>
-                  <Form {...registerForm}>
-                    <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4 pt-4">
-                      <FormField
-                        control={registerForm.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Full Name</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="John Doe"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                  <form onSubmit={handleRegister} className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="register-name">Full Name</Label>
+                      <Input 
+                        id="register-name" 
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                       />
-                      <FormField
-                        control={registerForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="email" 
-                                placeholder="your.email@example.com"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-email">Email</Label>
+                      <Input 
+                        id="register-email" 
+                        type="email" 
+                        placeholder="your.email@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
-                      <FormField
-                        control={registerForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="password" 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-password">Password</Label>
+                      <Input 
+                        id="register-password" 
+                        type="password" 
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-health-primary hover:bg-health-primary/90"
-                        disabled={registerForm.formState.isSubmitting}
-                      >
-                        {registerForm.formState.isSubmitting ? "Creating Account..." : "Create Account"}
-                      </Button>
-                    </form>
-                  </Form>
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-health-primary hover:bg-health-primary/90"
+                    >
+                      Create Account
+                    </Button>
+                  </form>
                 </DialogContent>
               </Dialog>
             </>
@@ -333,25 +240,101 @@ const Header = () => {
                   </Button>
                 ) : (
                   <>
-                    <Button 
-                      variant="outline" 
-                      className="justify-center w-full border-health-primary text-health-primary hover:bg-health-primary hover:text-white"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setLoginDialogOpen(true);
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                    <Button 
-                      className="justify-center w-full bg-health-primary text-white hover:bg-health-primary/90"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setRegisterDialogOpen(true);
-                      }}
-                    >
-                      Register
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="justify-center w-full border-health-primary text-health-primary hover:bg-health-primary hover:text-white">
+                          Sign In
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Sign In</DialogTitle>
+                          <DialogDescription>
+                            Enter your credentials to access your account
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleLogin} className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="mobile-login-email">Email</Label>
+                            <Input 
+                              id="mobile-login-email" 
+                              type="email" 
+                              placeholder="your.email@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="mobile-login-password">Password</Label>
+                            <Input 
+                              id="mobile-login-password" 
+                              type="password" 
+                              placeholder="••••••••"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-health-primary hover:bg-health-primary/90"
+                          >
+                            Sign In
+                          </Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="justify-center w-full bg-health-primary text-white hover:bg-health-primary/90">
+                          Register
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Create Account</DialogTitle>
+                          <DialogDescription>
+                            Enter your details to create a new account
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleRegister} className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="mobile-register-name">Full Name</Label>
+                            <Input 
+                              id="mobile-register-name" 
+                              placeholder="John Doe"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="mobile-register-email">Email</Label>
+                            <Input 
+                              id="mobile-register-email" 
+                              type="email" 
+                              placeholder="your.email@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="mobile-register-password">Password</Label>
+                            <Input 
+                              id="mobile-register-password" 
+                              type="password" 
+                              placeholder="••••••••"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-health-primary hover:bg-health-primary/90"
+                          >
+                            Create Account
+                          </Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   </>
                 )}
               </div>
