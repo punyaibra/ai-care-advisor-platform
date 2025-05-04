@@ -78,7 +78,7 @@ const HomePage = () => {
               <div className="relative mx-auto max-w-md">
                 <div className="absolute inset-0 bg-health-primary rounded-full blur-3xl opacity-20"></div>
                 <img 
-                  src="/images/doctor-ai-consultation.jpg" 
+                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80" 
                   alt="AI Health Assistant Illustration" 
                   className="relative z-10 w-full h-auto rounded-2xl shadow-lg object-cover"
                 />
@@ -157,7 +157,7 @@ const HomePage = () => {
           <div className="flex flex-col-reverse md:flex-row items-center">
             <div className="md:w-1/2 mt-10 md:mt-0">
               <img 
-                src="/images/health-tracking.jpg" 
+                src="https://images.unsplash.com/photo-1576089172869-4f5f6f315620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80" 
                 alt="Health Tracking Dashboard" 
                 className="w-full h-auto rounded-2xl shadow-lg object-cover"
               />
@@ -222,22 +222,22 @@ const HomePage = () => {
             <div className="md:w-1/2 md:pl-12">
               <div className="grid grid-cols-2 gap-4">
                 <img 
-                  src="/images/medical-article.jpg" 
+                  src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
                   alt="Medical Articles" 
                   className="w-full h-48 object-cover rounded-lg shadow-md"
                 />
                 <img 
-                  src="/images/medical-video.jpg" 
+                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80" 
                   alt="Medical Videos" 
                   className="w-full h-48 object-cover rounded-lg shadow-md"
                 />
                 <img 
-                  src="/images/doctor-consultation.jpg" 
+                  src="https://images.unsplash.com/photo-1666214280391-8ff5bd3c0bf0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
                   alt="Doctor Consultations" 
                   className="w-full h-48 object-cover rounded-lg shadow-md"
                 />
                 <img 
-                  src="/images/health-education.jpg" 
+                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2380&q=80" 
                   alt="Health Education" 
                   className="w-full h-48 object-cover rounded-lg shadow-md"
                 />
