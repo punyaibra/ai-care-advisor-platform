@@ -9,6 +9,7 @@ import ConsultPage from "./pages/ConsultPage";
 import HistoryPage from "./pages/HistoryPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFound";
+import Layout from "@/components/layout/Layout";
 
 const queryClient = new QueryClient();
 

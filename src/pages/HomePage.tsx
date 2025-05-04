@@ -78,9 +78,9 @@ const HomePage = () => {
               <div className="relative mx-auto max-w-md">
                 <div className="absolute inset-0 bg-health-primary rounded-full blur-3xl opacity-20"></div>
                 <img 
-                  src="/placeholder.svg" 
+                  src="/images/doctor-ai-consultation.jpg" 
                   alt="AI Health Assistant Illustration" 
-                  className="relative z-10 w-full h-auto rounded-2xl shadow-lg"
+                  className="relative z-10 w-full h-auto rounded-2xl shadow-lg object-cover"
                 />
               </div>
             </div>
@@ -151,8 +151,35 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Health Tracking Section */}
       <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col-reverse md:flex-row items-center">
+            <div className="md:w-1/2 mt-10 md:mt-0">
+              <img 
+                src="/images/health-tracking.jpg" 
+                alt="Health Tracking Dashboard" 
+                className="w-full h-auto rounded-2xl shadow-lg object-cover"
+              />
+            </div>
+            <div className="md:w-1/2 md:pl-12">
+              <h2 className="text-3xl font-bold mb-6 text-health-dark">Track Your Health Journey</h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Monitor symptoms over time, track vital signs, and visualize your health progress with intuitive charts and personalized insights.
+              </p>
+              <Button 
+                asChild 
+                className="bg-health-primary hover:bg-health-primary/90"
+              >
+                <Link to="/history">View Your Health History</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-blue-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-health-dark">
             What Users Say
@@ -161,7 +188,7 @@ const HomePage = () => {
             {testimonials.map((testimonial, index) => (
               <div 
                 key={index}
-                className="bg-blue-50 p-6 rounded-xl"
+                className="bg-white p-6 rounded-xl shadow-sm"
               >
                 <svg className="h-8 w-8 text-health-primary mb-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -170,6 +197,52 @@ const HomePage = () => {
                 <p className="font-semibold text-health-dark">— {testimonial.author}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Educational Resources Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center">
+            <div className="md:w-1/2 mb-10 md:mb-0">
+              <h2 className="text-3xl font-bold mb-6 text-health-dark">
+                Medical Resources At Your Fingertips
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Access a vast library of medical articles, videos, and educational content to better understand conditions and treatments.
+              </p>
+              <Button 
+                asChild 
+                className="bg-health-primary hover:bg-health-primary/90"
+              >
+                <Link to="/resources">Explore Resources</Link>
+              </Button>
+            </div>
+            <div className="md:w-1/2 md:pl-12">
+              <div className="grid grid-cols-2 gap-4">
+                <img 
+                  src="/images/medical-article.jpg" 
+                  alt="Medical Articles" 
+                  className="w-full h-48 object-cover rounded-lg shadow-md"
+                />
+                <img 
+                  src="/images/medical-video.jpg" 
+                  alt="Medical Videos" 
+                  className="w-full h-48 object-cover rounded-lg shadow-md"
+                />
+                <img 
+                  src="/images/doctor-consultation.jpg" 
+                  alt="Doctor Consultations" 
+                  className="w-full h-48 object-cover rounded-lg shadow-md"
+                />
+                <img 
+                  src="/images/health-education.jpg" 
+                  alt="Health Education" 
+                  className="w-full h-48 object-cover rounded-lg shadow-md"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
