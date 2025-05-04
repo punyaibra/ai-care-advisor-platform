@@ -75,8 +75,8 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     setNotifications(prev => [newNotification, ...prev]);
     
     // Show toast for new notification
-    toast({
-      title: notification.title,
+    // Fixed: Using the correct format for sonner toast
+    toast(notification.title, {
       description: notification.message,
     });
   };
