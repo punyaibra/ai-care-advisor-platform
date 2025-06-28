@@ -60,12 +60,12 @@ const doctors = [
 
 const ContactDoctorPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
 
   const filteredDoctors = doctors.filter(doctor => {
     const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSpecialty = !selectedSpecialty || doctor.specialty === selectedSpecialty;
+    const matchesSpecialty = selectedSpecialty === "all" || doctor.specialty === selectedSpecialty;
     return matchesSearch && matchesSpecialty;
   });
 
@@ -100,7 +100,7 @@ const ContactDoctorPage = () => {
               <SelectValue placeholder="All Specialties" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Specialties</SelectItem>
+              <SelectItem value="all">All Specialties</SelectItem>
               {specialties.map(specialty => (
                 <SelectItem key={specialty} value={specialty}>
                   {specialty}
