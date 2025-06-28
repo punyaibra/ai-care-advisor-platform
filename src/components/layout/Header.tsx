@@ -66,6 +66,9 @@ const Header = () => {
           <Link to="/consult" className="text-health-dark hover:text-health-primary transition-colors">
             AI Consultation
           </Link>
+          <Link to="/contact-doctor" className="text-health-dark hover:text-health-primary transition-colors">
+            Contact Doctor
+          </Link>
           <Link to="/history" className="text-health-dark hover:text-health-primary transition-colors">
             Health History
           </Link>
@@ -215,6 +218,13 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 AI Consultation
+              </Link>
+              <Link 
+                to="/contact-doctor" 
+                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact Doctor
               </Link>
               <Link 
                 to="/history" 
