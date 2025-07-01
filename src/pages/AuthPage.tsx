@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/components/ui/sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +18,13 @@ const AuthPage = () => {
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,15 +34,28 @@ const AuthPage = () => {
     }
 
     setIsLoading(true);
-    const { error } = await signIn(loginEmail, loginPassword);
-    
-    if (error) {
-      toast.error(error.message || 'Terjadi kesalahan saat login');
-    } else {
-      toast.success('Berhasil login!');
-      navigate('/');
+    try {
+      const { error } = await signIn(loginEmail, loginPassword);
+      
+      if (error) {
+        console.log('Login error:', error);
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Email atau password salah');
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Silakan konfirmasi email Anda terlebih dahulu');
+        } else {
+          toast.error(error.message || 'Terjadi kesalahan saat login');
+        }
+      } else {
+        toast.success('Berhasil login!');
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      toast.error('Terjadi kesalahan saat login');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -56,18 +71,31 @@ const AuthPage = () => {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(registerEmail, registerPassword, fullName);
-    
-    if (error) {
-      if (error.message.includes('already registered')) {
-        toast.error('Email sudah terdaftar. Silakan gunakan email lain atau login.');
+    try {
+      const { error } = await signUp(registerEmail, registerPassword, fullName);
+      
+      if (error) {
+        console.log('Register error:', error);
+        if (error.message.includes('User already registered')) {
+          toast.error('Email sudah terdaftar. Silakan gunakan email lain atau login.');
+        } else if (error.message.includes('already registered')) {
+          toast.error('Email sudah terdaftar. Silakan gunakan email lain atau login.');
+        } else {
+          toast.error(error.message || 'Terjadi kesalahan saat mendaftar');
+        }
       } else {
-        toast.error(error.message || 'Terjadi kesalahan saat mendaftar');
+        toast.success('Akun berhasil dibuat! Silakan cek email untuk konfirmasi.');
+        // Clear form after successful registration
+        setRegisterEmail('');
+        setRegisterPassword('');
+        setFullName('');
       }
-    } else {
-      toast.success('Akun berhasil dibuat! Silakan cek email untuk konfirmasi.');
+    } catch (err) {
+      console.error('Register error:', err);
+      toast.error('Terjadi kesalahan saat mendaftar');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -103,14 +131,28 @@ const AuthPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="login-password"
+                      type={showLoginPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowLoginPassword(!showLoginPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showLoginPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <Button 
                   type="submit" 
@@ -154,14 +196,28 @@ const AuthPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="register-password">Password</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={registerPassword}
-                    onChange={(e) => setRegisterPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="register-password"
+                      type={showRegisterPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={registerPassword}
+                      onChange={(e) => setRegisterPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showRegisterPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <Button 
                   type="submit" 
