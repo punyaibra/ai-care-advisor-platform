@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell, User } from "lucide-react";
 import {
@@ -18,11 +17,20 @@ import { toast } from "@/components/ui/sonner";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
   
   // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    if (path !== "/consult") {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +62,7 @@ const Header = () => {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2" onClick={() => handleNavigation("/")}>
           <div className="w-8 h-8 rounded-full bg-health-primary flex items-center justify-center">
             <span className="text-white font-semibold text-sm">AI</span>
           </div>
@@ -63,18 +71,30 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/consult" className="text-health-dark hover:text-health-primary transition-colors">
+          <button 
+            onClick={() => handleNavigation("/consult")}
+            className="text-health-dark hover:text-health-primary transition-colors"
+          >
             AI Consultation
-          </Link>
-          <Link to="/contact-doctor" className="text-health-dark hover:text-health-primary transition-colors">
+          </button>
+          <button 
+            onClick={() => handleNavigation("/contact-doctor")}
+            className="text-health-dark hover:text-health-primary transition-colors"
+          >
             Contact Doctor
-          </Link>
-          <Link to="/history" className="text-health-dark hover:text-health-primary transition-colors">
+          </button>
+          <button 
+            onClick={() => handleNavigation("/history")}
+            className="text-health-dark hover:text-health-primary transition-colors"
+          >
             Health History
-          </Link>
-          <Link to="/resources" className="text-health-dark hover:text-health-primary transition-colors">
+          </button>
+          <button 
+            onClick={() => handleNavigation("/resources")}
+            className="text-health-dark hover:text-health-primary transition-colors"
+          >
             Resources
-          </Link>
+          </button>
         </nav>
         
         {/* Desktop Action Items */}
@@ -212,34 +232,30 @@ const Header = () => {
         <div className="md:hidden bg-white border-t">
           <div className="container mx-auto px-4 py-2">
             <nav className="flex flex-col space-y-3 py-3">
-              <Link 
-                to="/consult" 
-                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md"
-                onClick={() => setIsMenuOpen(false)}
+              <button 
+                onClick={() => handleNavigation("/consult")}
+                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md text-left"
               >
                 AI Consultation
-              </Link>
-              <Link 
-                to="/contact-doctor" 
-                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={() => handleNavigation("/contact-doctor")}
+                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md text-left"
               >
                 Contact Doctor
-              </Link>
-              <Link 
-                to="/history" 
-                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={() => handleNavigation("/history")}
+                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md text-left"
               >
                 Health History
-              </Link>
-              <Link 
-                to="/resources" 
-                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={() => handleNavigation("/resources")}
+                className="px-3 py-2 text-health-dark hover:bg-health-light rounded-md text-left"
               >
                 Resources
-              </Link>
+              </button>
               <div className="pt-2 flex flex-col space-y-2">
                 {isLoggedIn ? (
                   <Button 
@@ -342,7 +358,7 @@ const Header = () => {
                           >
                             Create Account
                           </Button>
-                        </form>
+                          </form>
                       </DialogContent>
                     </Dialog>
                   </>
