@@ -37,6 +37,8 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li className="text-gray-600">support@careadvisor.com</li>
               <li className="text-gray-600">1-800-CARE-ADV</li>
+              <li><Link to="/admin" className="text-gray-600 hover:text-health-primary">Admin Portal</Link></li>
+              <li><Link to="/doctor" className="text-gray-600 hover:text-health-primary">Doctor Dashboard</Link></li>
             </ul>
           </div>
         </div>
