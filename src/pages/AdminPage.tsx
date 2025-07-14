@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,16 +14,57 @@ import {
   BarChart3,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
+  Plus,
+  Edit,
+  Trash2
 } from "lucide-react";
+import ArticleForm from "@/components/admin/ArticleForm";
+import UserManagement from "@/components/admin/UserManagement";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminPage = () => {
+  const { toast } = useToast();
+  
   const stats = [
     { title: "Total Users", value: "1,234", icon: Users, change: "+12%" },
     { title: "Active Doctors", value: "45", icon: UserCheck, change: "+3%" },
     { title: "Daily Consultations", value: "89", icon: Activity, change: "+8%" },
-    { title: "Reports Generated", value: "456", icon: FileText, change: "+15%" }
+    { title: "Published Articles", value: "156", icon: FileText, change: "+15%" }
   ];
+
+  const [articles, setArticles] = useState([
+    {
+      id: "1",
+      title: "Understanding Diabetes Management",
+      content: "Comprehensive guide to managing diabetes...",
+      category: "chronic-disease",
+      tags: ["diabetes", "management", "health"],
+      author: "Dr. Sarah Wilson",
+      status: "published" as const,
+      createdAt: "2024-01-10"
+    },
+    {
+      id: "2", 
+      title: "Mental Health in the Digital Age",
+      content: "How technology affects our mental wellbeing...",
+      category: "mental-health",
+      tags: ["mental health", "technology", "wellbeing"],
+      author: "Dr. Mike Chen",
+      status: "draft" as const,
+      createdAt: "2024-01-12"
+    },
+    {
+      id: "3",
+      title: "Nutrition Guidelines for Heart Health",
+      content: "Essential dietary recommendations for cardiovascular health...",
+      category: "nutrition",
+      tags: ["nutrition", "heart health", "diet"],
+      author: "Dr. Emily Rodriguez",
+      status: "published" as const,
+      createdAt: "2024-01-14"
+    }
+  ]);
 
   const recentActivities = [
     { type: "user", message: "New user registration: Dr. Sarah Wilson", time: "2 minutes ago", status: "success" },
@@ -32,10 +74,53 @@ const AdminPage = () => {
   ];
 
   const pendingApprovals = [
-    { name: "Dr. Emily Rodriguez", specialty: "Cardiology", submitted: "2 days ago" },
-    { name: "Dr. James Park", specialty: "Dermatology", submitted: "1 day ago" },
-    { name: "Dr. Lisa Thompson", specialty: "Pediatrics", submitted: "3 hours ago" }
+    { 
+      id: "1",
+      name: "Dr. Emily Rodriguez", 
+      specialty: "Cardiology", 
+      submitted: "2 days ago",
+      email: "emily.rodriguez@email.com",
+      license: "MD123456",
+      experience: "8 years"
+    },
+    { 
+      id: "2",
+      name: "Dr. James Park", 
+      specialty: "Dermatology", 
+      submitted: "1 day ago",
+      email: "james.park@email.com",
+      license: "MD789012",
+      experience: "5 years"
+    },
+    { 
+      id: "3",
+      name: "Dr. Lisa Thompson", 
+      specialty: "Pediatrics", 
+      submitted: "3 hours ago",
+      email: "lisa.thompson@email.com",
+      license: "MD345678",
+      experience: "12 years"
+    }
   ];
+
+  const handleArticleCreate = (newArticle: any) => {
+    setArticles([...articles, newArticle]);
+  };
+
+  const handleDoctorApproval = (doctorId: string, action: 'approve' | 'reject') => {
+    toast({
+      title: action === 'approve' ? "Doctor Approved" : "Doctor Rejected",
+      description: `Doctor application has been ${action}d successfully`,
+    });
+  };
+
+  const handleDeleteArticle = (articleId: string) => {
+    setArticles(articles.filter(article => article.id !== articleId));
+    toast({
+      title: "Article Deleted",
+      description: "Article has been deleted successfully",
+    });
+  };
 
   return (
     <Layout>
@@ -72,10 +157,11 @@ const AdminPage = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="doctors">Doctor Approvals</TabsTrigger>
+            <TabsTrigger value="articles">Article Management</TabsTrigger>
             <TabsTrigger value="settings">System Settings</TabsTrigger>
           </TabsList>
 
@@ -147,25 +233,7 @@ const AdminPage = () => {
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>Manage user accounts and permissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <Button>Add New User</Button>
-                    <Button variant="outline">Export Users</Button>
-                    <Button variant="outline">Send Notifications</Button>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    User management functionality would be implemented here with tables for user data,
-                    role assignments, and account status management.
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <UserManagement />
           </TabsContent>
 
           <TabsContent value="doctors" className="space-y-6">
@@ -176,21 +244,32 @@ const AdminPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {pendingApprovals.map((doctor, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
+                  {pendingApprovals.map((doctor) => (
+                    <div key={doctor.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
                         <h4 className="font-medium">{doctor.name}</h4>
                         <p className="text-sm text-gray-600">{doctor.specialty}</p>
+                        <p className="text-xs text-gray-500">
+                          {doctor.email} • License: {doctor.license} • {doctor.experience} experience
+                        </p>
                         <p className="text-xs text-gray-500">Submitted {doctor.submitted}</p>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Button 
+                          size="sm" 
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={() => handleDoctorApproval(doctor.id, 'approve')}
+                        >
                           Approve
                         </Button>
                         <Button size="sm" variant="outline">
                           Review
                         </Button>
-                        <Button size="sm" variant="destructive">
+                        <Button 
+                          size="sm" 
+                          variant="destructive"
+                          onClick={() => handleDoctorApproval(doctor.id, 'reject')}
+                        >
                           Reject
                         </Button>
                       </div>
@@ -199,6 +278,59 @@ const AdminPage = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="articles" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <ArticleForm onArticleCreate={handleArticleCreate} />
+              </div>
+              
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Published Articles</CardTitle>
+                    <CardDescription>Manage existing articles</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {articles.map((article) => (
+                        <div key={article.id} className="p-3 border rounded-lg">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm line-clamp-2">{article.title}</h4>
+                              <p className="text-xs text-gray-600 mt-1">By {article.author}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Badge 
+                                  variant={article.status === 'published' ? 'default' : 'secondary'}
+                                  className="text-xs"
+                                >
+                                  {article.status}
+                                </Badge>
+                                <span className="text-xs text-gray-500">{article.createdAt}</span>
+                              </div>
+                            </div>
+                            <div className="flex gap-1 ml-2">
+                              <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="ghost" 
+                                className="h-6 w-6 p-0 text-red-600"
+                                onClick={() => handleDeleteArticle(article.id)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">

@@ -16,6 +16,7 @@ import {
   AlertCircle,
   User
 } from "lucide-react";
+import PatientList from "@/components/doctor/PatientList";
 
 const DoctorPage = () => {
   const stats = [
@@ -157,25 +158,7 @@ const DoctorPage = () => {
           </TabsContent>
 
           <TabsContent value="patients" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Patient Management</CardTitle>
-                <CardDescription>Manage your patient records and information</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <Button>Add New Patient</Button>
-                    <Button variant="outline">Search Patients</Button>
-                    <Button variant="outline">Export Records</Button>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Patient management system would include patient profiles, medical history,
-                    treatment plans, and communication tools.
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <PatientList />
           </TabsContent>
 
           <TabsContent value="consultations" className="space-y-6">
